@@ -1,0 +1,6 @@
+{
+  "name": "TulisHub - Toko Alat Tulis Profesional",
+  "description": "Marketplace alat tulis premium dengan dashboard admin terintegrasi, manajemen stok, dan pengalaman belanja yang responsif.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["firebase", "auth", "firestore"]
+}

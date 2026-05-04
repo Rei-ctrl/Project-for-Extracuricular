@@ -1,0 +1,108 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Stationery items available for sale",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the stationery item"
+        },
+        "description": {
+          "type": "string",
+          "description": "Professional copywriting description of the product"
+        },
+        "price": {
+          "type": "number",
+          "description": "Price in IDR"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to the product image"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Writing", "Paper", "Desktop", "Art", "Organization"],
+          "description": "Product category"
+        },
+        "stockStatus": {
+          "type": "string",
+          "enum": ["available", "out-of-stock"],
+          "description": "Availability status managed by admin"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the product was added"
+        }
+      },
+      "required": ["name", "description", "price", "imageUrl", "category", "stockStatus", "createdAt"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User account information and roles",
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "admin"],
+          "description": "User role for dashboard access"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["displayName", "email", "role", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase record",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of ordered items with quantity and price"
+        },
+        "total": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "processing", "shipped", "delivered", "cancelled"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["userId", "items", "total", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "products/{productId}": {
+      "schema": "Product",
+      "description": "Public products collection"
+    },
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profiles"
+    },
+    "orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders"
+    }
+  }
+}
