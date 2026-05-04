@@ -72,11 +72,15 @@
         "userId": {
           "type": "string"
         },
+        "userEmail": {
+          "type": "string",
+          "format": "email"
+        },
         "items": {
           "type": "array",
           "description": "List of ordered items with quantity and price"
         },
-        "total": {
+        "totalPrice": {
           "type": "number"
         },
         "status": {
@@ -88,7 +92,7 @@
           "format": "date-time"
         }
       },
-      "required": ["userId", "items", "total", "status", "createdAt"]
+      "required": ["userId", "userEmail", "items", "totalPrice", "status", "createdAt"]
     }
   },
   "firestore": {
