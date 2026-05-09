@@ -1,13 +1,508 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StatioMart — Toko Alat Tulis Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<!-- ========== NAVBAR ========== -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goHome()">Statio<span>Mart</span></a>
+    <div class="nav-links">
+      <a onclick="goHome()" id="nav-home" class="active-link">Beranda</a>
+      <a onclick="showSection('shop')">Produk</a>
+      <a onclick="showSection('about')">Tentang</a>
+      <a onclick="showSection('contact')">Kontak</a>
+      <a onclick="showUserDash()" id="nav-dashboard" style="display:none">Dashboard</a>
+      <a onclick="showAdminDash()" id="nav-admin" style="display:none">Admin Panel</a>
+    </div>
+    <div class="nav-right">
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 Keranjang
+        <span class="cart-badge" id="cart-count">0</span>
+      </button>
+      <button class="btn-primary" id="auth-btn" onclick="showAuth()">Masuk</button>
+      <button class="btn-primary" id="logout-btn" onclick="logout()" style="display:none;background:#c0392b">Keluar</button>
+    </div>
+    <div class="hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HOME VIEW ========== -->
+<div class="view active" id="view-home">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="fade-in">
+        <div class="hero-badge">✦ Toko Alat Tulis Premium</div>
+        <h1>Tulis Kisahmu dengan <em>Alat Terbaik</em></h1>
+        <p>Temukan koleksi alat tulis premium — dari pena mewah hingga buku catatan premium — yang menginspirasi kreativitas dan produktivitas Anda setiap hari.</p>
+        <div class="hero-cta">
+          <button class="btn-hero" onclick="showSection('shop')">Belanja Sekarang</button>
+          <button class="btn-outline" onclick="showSection('about')">Pelajari Lebih Lanjut</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong>500+</strong><span>Produk</span></div>
+          <div class="hero-stat"><strong>10rb+</strong><span>Pelanggan</span></div>
+          <div class="hero-stat"><strong>4.9★</strong><span>Rating</span></div>
+          <div class="hero-stat"><strong>100%</strong><span>Asli</span></div>
+        </div>
+      </div>
+      <div class="hero-visual fade-in-2">
+        <div class="mini-card"><div class="icon">✒️</div><strong>Pena Premium</strong><p>Koleksi Pilot & Lamy</p><div class="price">Rp 85rb+</div></div>
+        <div class="mini-card"><div class="icon">📓</div><strong>Buku Catatan</strong><p>Hardcover & Softcover</p><div class="price">Rp 45rb+</div></div>
+        <div class="mini-card"><div class="icon">🎨</div><strong>Pensil Seni</strong><p>Set Faber-Castell</p><div class="price">Rp 120rb+</div></div>
+        <div class="mini-card"><div class="icon">🖊️</div><strong>Marker Set</strong><p>Copic & Winsor</p><div class="price">Rp 200rb+</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kategori -->
+  <section>
+    <div class="section-header reveal">
+      <div class="section-label">Jelajahi</div>
+      <h2>Kategori Produk</h2>
+      <p>Temukan semua kebutuhan alat tulis Anda dalam satu tempat</p>
+    </div>
+    <div class="cat-grid reveal">
+      <div class="cat-card" onclick="filterByCategory('Pena')"><div class="cat-icon">✒️</div><h3>Pena</h3><span>48 produk</span></div>
+      <div class="cat-card" onclick="filterByCategory('Pensil')"><div class="cat-icon">✏️</div><h3>Pensil</h3><span>36 produk</span></div>
+      <div class="cat-card" onclick="filterByCategory('Notebook')"><div class="cat-icon">📓</div><h3>Notebook</h3><span>62 produk</span></div>
+      <div class="cat-card" onclick="filterByCategory('Marker')"><div class="cat-icon">🖊️</div><h3>Marker</h3><span>29 produk</span></div>
+      <div class="cat-card" onclick="filterByCategory('Stappler')"><div class="cat-icon">📎</div><h3>Klip & Stapler</h3><span>21 produk</span></div>
+      <div class="cat-card" onclick="filterByCategory('Tas')"><div class="cat-icon">🎒</div><h3>Tas & Tempat</h3><span>18 produk</span></div>
+    </div>
+  </section>
+
+  <!-- Produk Unggulan -->
+  <section style="background: var(--bg2); max-width: 100%; padding: 4rem 0;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 2rem;">
+      <div class="section-header reveal">
+        <div class="section-label">Pilihan Terbaik</div>
+        <h2>Produk Unggulan</h2>
+        <p>Kurasi terbaik dari koleksi alat tulis premium kami</p>
+      </div>
+      <div class="product-grid reveal" id="featured-grid"></div>
+      <div style="text-align:center; margin-top: 2.5rem;">
+        <button class="btn-hero" style="background:var(--primary);color:#fff" onclick="showSection('shop')">Lihat Semua Produk →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keunggulan -->
+  <section>
+    <div class="section-header reveal">
+      <div class="section-label">Keunggulan Kami</div>
+      <h2>Mengapa Pilih StatioMart?</h2>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-card"><div class="feat-icon">🚚</div><h3>Pengiriman Cepat</h3><p>Pengiriman ke seluruh Indonesia dalam 1–3 hari kerja dengan ongkos gratis untuk pembelian di atas Rp 150rb.</p></div>
+      <div class="feat-card"><div class="feat-icon">✅</div><h3>Produk 100% Asli</h3><p>Semua produk kami bergaransi keaslian langsung dari distributor resmi dan brand ternama dunia.</p></div>
+      <div class="feat-card"><div class="feat-icon">↩️</div><h3>Retur 30 Hari</h3><p>Tidak puas? Kembalikan produk dalam 30 hari setelah pembelian dengan kondisi asli tanpa pertanyaan berlebih.</p></div>
+      <div class="feat-card"><div class="feat-icon">💬</div><h3>Support 24/7</h3><p>Tim layanan pelanggan kami siap membantu Anda setiap saat melalui chat, email, atau telepon.</p></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo">StatioMart</span>
+        <p>Toko alat tulis premium terpercaya di Indonesia. Kami menghadirkan produk berkualitas tinggi untuk menginspirasi produktivitas dan kreativitas Anda.</p>
+      </div>
+      <div>
+        <h4>Produk</h4>
+        <ul>
+          <li><a>Pena & Pensil</a></li>
+          <li><a>Notebook</a></li>
+          <li><a>Marker & Highlighter</a></li>
+          <li><a>Aksesoris</a></li>
+          <li><a>Promo & Diskon</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a>Tentang Kami</a></li>
+          <li><a>Blog</a></li>
+          <li><a>Karir</a></li>
+          <li><a>Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Bantuan</h4>
+        <ul>
+          <li><a>Cara Pemesanan</a></li>
+          <li><a>Pengiriman</a></li>
+          <li><a>Pengembalian</a></li>
+          <li><a>Kontak</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 StatioMart. Hak cipta dilindungi.</span>
+      <span>Dibuat dengan ❤️ di Jakarta, Indonesia</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ========== SHOP VIEW ========== -->
+<div class="view" id="view-shop">
+  <section style="padding-top: 2.5rem;">
+    <div class="section-header">
+      <div class="section-label">Koleksi Lengkap</div>
+      <h2>Semua Produk</h2>
+    </div>
+    <div class="filter-bar">
+      <input type="text" placeholder="🔍  Cari produk..." id="search-input" oninput="filterProducts()">
+      <select onchange="filterProducts()" id="cat-filter">
+        <option value="">Semua Kategori</option>
+        <option>Pena</option>
+        <option>Pensil</option>
+        <option>Notebook</option>
+        <option>Marker</option>
+        <option>Stappler</option>
+        <option>Tas</option>
+      </select>
+      <select onchange="sortProducts()" id="sort-filter">
+        <option value="default">Urutkan</option>
+        <option value="price-asc">Harga: Terendah</option>
+        <option value="price-desc">Harga: Tertinggi</option>
+        <option value="name">Nama A–Z</option>
+      </select>
+    </div>
+    <div class="product-grid" id="shop-grid"></div>
+  </section>
+</div>
+
+<!-- ========== ABOUT VIEW ========== -->
+<div class="view" id="view-about">
+  <section style="max-width:720px; text-align:center; padding-top:4rem;">
+    <div class="section-label">Tentang Kami</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:2.25rem;margin:0.5rem 0 1rem;">Kami Mencintai Alat Tulis</h2>
+    <p style="color:var(--text2);line-height:1.8;font-size:1.05rem;margin-bottom:2rem;">Didirikan pada 2020 di Jakarta, StatioMart lahir dari kecintaan mendalam terhadap alat tulis berkualitas. Kami percaya bahwa alat yang tepat dapat mengubah cara seseorang berpikir, berkreasi, dan produktif. Misi kami adalah menghadirkan produk terbaik dunia ke tangan masyarakat Indonesia dengan harga yang terjangkau dan layanan prima.</p>
+    <div class="feat-grid" style="text-align:left;">
+      <div class="feat-card"><div class="feat-icon">🏆</div><h3>Visi</h3><p>Menjadi marketplace alat tulis #1 di Asia Tenggara dalam kurang dari 5 tahun.</p></div>
+      <div class="feat-card"><div class="feat-icon">🎯</div><h3>Misi</h3><p>Menyediakan alat tulis premium terbaik dengan harga adil, pengiriman cepat, dan layanan tulus.</p></div>
+    </div>
+  </section>
+</div>
+
+<!-- ========== CONTACT VIEW ========== -->
+<div class="view" id="view-contact">
+  <section style="max-width:600px; padding-top:4rem;">
+    <div class="section-label">Hubungi Kami</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:2rem;margin:0.5rem 0 0.75rem;">Ada Pertanyaan?</h2>
+    <p style="color:var(--text2);margin-bottom:2rem;">Tim kami siap membantu Anda. Isi formulir di bawah dan kami akan merespons dalam 1x24 jam.</p>
+    <div class="form-group"><label>Nama Lengkap</label><input type="text" placeholder="John Doe"></div>
+    <div class="form-group"><label>Email</label><input type="email" placeholder="john@email.com"></div>
+    <div class="form-group">
+      <label>Pesan</label>
+      <textarea style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:0.7rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--text);height:120px;resize:vertical;" placeholder="Tuliskan pertanyaan Anda di sini..."></textarea>
+    </div>
+    <button class="btn-hero" style="width:100%" onclick="showToast('✅ Pesan terkirim! Kami akan segera menghubungi Anda.')">Kirim Pesan</button>
+  </section>
+</div>
+
+<!-- ========== USER DASHBOARD VIEW ========== -->
+<div class="view" id="view-user-dash">
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="user-initials">JD</div>
+        <h4 id="user-display-name">John Doe</h4>
+        <span id="user-display-email">john@email.com</span>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a onclick="switchDash('overview')" id="dmenu-overview" class="active">📊 Ringkasan</a></li>
+        <li><a onclick="switchDash('orders')" id="dmenu-orders">📦 Pesanan Saya</a></li>
+        <li><a onclick="switchDash('wishlist')" id="dmenu-wishlist">❤️ Wishlist</a></li>
+        <li><a onclick="switchDash('profile')" id="dmenu-profile">👤 Profil</a></li>
+        <li><a onclick="showSection('shop')" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;">🛍️ Lanjut Belanja</a></li>
+      </ul>
+    </aside>
+    <main class="dash-content">
+
+      <!-- Overview -->
+      <div class="dash-section active" id="dsec-overview">
+        <h1 class="dash-title">Halo, <span id="greet-name">John</span>! 👋</h1>
+        <p class="dash-sub">Selamat datang kembali di StatioMart</p>
+        <div class="stat-row">
+          <div class="stat-card"><div class="s-label">Total Pesanan</div><div class="s-val">12</div><div class="s-note">↑ 3 bulan ini</div></div>
+          <div class="stat-card"><div class="s-label">Total Belanja</div><div class="s-val">Rp 1.2jt</div><div class="s-note">Rata-rata Rp 100rb</div></div>
+          <div class="stat-card"><div class="s-label">Wishlist</div><div class="s-val">8</div><div class="s-note">Produk tersimpan</div></div>
+          <div class="stat-card"><div class="s-label">Poin Reward</div><div class="s-val">1,250</div><div class="s-note">≈ Rp 12.500</div></div>
+        </div>
+        <h3 style="font-weight:600;margin-bottom:1rem;">Pesanan Terbaru</h3>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+          <table class="order-table" style="width:100%">
+            <thead><tr><th>No. Order</th><th>Produk</th><th>Total</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>#SM-2024-001</td><td>Pilot Metropolitan + Notebook</td><td>Rp 285.000</td><td><span class="status-pill s-delivered">Diterima</span></td></tr>
+              <tr><td>#SM-2024-002</td><td>Faber-Castell 9000 Set</td><td>Rp 142.000</td><td><span class="status-pill s-shipped">Dikirim</span></td></tr>
+              <tr><td>#SM-2024-003</td><td>Leuchtturm1917 A5</td><td>Rp 195.000</td><td><span class="status-pill s-processing">Diproses</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pesanan -->
+      <div class="dash-section" id="dsec-orders">
+        <h1 class="dash-title">Pesanan Saya</h1>
+        <p class="dash-sub">Riwayat seluruh transaksi Anda</p>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;">
+          <table class="order-table" style="width:100%">
+            <thead><tr><th>No. Order</th><th>Tanggal</th><th>Produk</th><th>Qty</th><th>Total</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>#SM-2024-001</td><td>12 Nov 2024</td><td>Pilot Metropolitan + Notebook Moleskine</td><td>2</td><td>Rp 285.000</td><td><span class="status-pill s-delivered">Diterima</span></td></tr>
+              <tr><td>#SM-2024-002</td><td>28 Nov 2024</td><td>Faber-Castell 9000 Set</td><td>1</td><td>Rp 142.000</td><td><span class="status-pill s-shipped">Dikirim</span></td></tr>
+              <tr><td>#SM-2024-003</td><td>5 Des 2024</td><td>Leuchtturm1917 A5 Hardcover</td><td>1</td><td>Rp 195.000</td><td><span class="status-pill s-processing">Diproses</span></td></tr>
+              <tr><td>#SM-2023-049</td><td>3 Okt 2023</td><td>Copic Sketch 12 Warna</td><td>1</td><td>Rp 520.000</td><td><span class="status-pill s-delivered">Diterima</span></td></tr>
+              <tr><td>#SM-2023-031</td><td>15 Agu 2023</td><td>Staedtler Triplus Fineliner Set</td><td>2</td><td>Rp 198.000</td><td><span class="status-pill s-cancelled">Dibatalkan</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Wishlist -->
+      <div class="dash-section" id="dsec-wishlist">
+        <h1 class="dash-title">Wishlist Saya ❤️</h1>
+        <p class="dash-sub">Produk yang Anda simpan</p>
+        <div class="product-grid" id="wishlist-grid"></div>
+      </div>
+
+      <!-- Profil -->
+      <div class="dash-section" id="dsec-profile">
+        <h1 class="dash-title">Profil Saya</h1>
+        <p class="dash-sub">Kelola informasi akun Anda</p>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;max-width:500px;">
+          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="profile-name" value="John Doe"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="profile-email" value="john@email.com"></div>
+          <div class="form-group"><label>No. Telepon</label><input type="text" placeholder="+62 812 xxxx xxxx"></div>
+          <div class="form-group"><label>Alamat</label><input type="text" placeholder="Jl. Contoh No. 1, Jakarta"></div>
+          <button class="btn-hero" style="margin-top:0.5rem" onclick="showToast('✅ Profil berhasil diperbarui!')">Simpan Perubahan</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ========== ADMIN DASHBOARD VIEW ========== -->
+<div class="view" id="view-admin">
+  <div class="admin-header">
+    <h1>Statio<span>Mart</span> — Admin Panel</h1>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <span style="font-size:0.85rem;opacity:0.7">👤 Admin</span>
+      <button onclick="goHome()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:8px;padding:0.4rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.8rem;cursor:pointer;">← Ke Toko</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-sidebar">
+      <h4>Utama</h4>
+      <div class="admin-nav-item active" onclick="switchAdmin('adashboard')">📊 Dashboard</div>
+      <div class="admin-nav-item" onclick="switchAdmin('aproducts')">📦 Produk</div>
+      <div class="admin-nav-item" onclick="switchAdmin('aorders')">🛒 Pesanan</div>
+      <div class="admin-nav-item" onclick="switchAdmin('ausers')">👥 Pengguna</div>
+      <h4>Konten</h4>
+      <div class="admin-nav-item" onclick="switchAdmin('acategories')">🗂️ Kategori</div>
+      <div class="admin-nav-item" onclick="switchAdmin('asettings')">⚙️ Pengaturan</div>
+    </div>
+    <div class="admin-main">
+
+      <!-- Admin Overview -->
+      <div class="admin-section active" id="asec-adashboard">
+        <div class="admin-page-title">Dashboard</div>
+        <div class="admin-page-sub">Ringkasan kinerja toko hari ini</div>
+        <div class="admin-stat-row">
+          <div class="admin-stat"><div class="a-ico">💰</div><div class="a-lbl">Pendapatan Bulan Ini</div><div class="a-val">Rp 28.4jt</div><div class="a-sub green">↑ 18% vs bulan lalu</div></div>
+          <div class="admin-stat"><div class="a-ico">📦</div><div class="a-lbl">Total Pesanan</div><div class="a-val">284</div><div class="a-sub green">↑ 24 hari ini</div></div>
+          <div class="admin-stat"><div class="a-ico">👥</div><div class="a-lbl">Pengguna Baru</div><div class="a-val">47</div><div class="a-sub green">↑ 12 minggu ini</div></div>
+          <div class="admin-stat"><div class="a-ico">📉</div><div class="a-lbl">Stok Habis</div><div class="a-val">3</div><div class="a-sub red">Perlu restok segera</div></div>
+        </div>
+        <h3 style="font-weight:600;margin-bottom:1rem;">Pesanan Terbaru</h3>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:auto;">
+          <table class="admin-table">
+            <thead><tr><th>ID</th><th>Pelanggan</th><th>Produk</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <tr><td>#SM-284</td><td>Andi Santoso</td><td>Pilot Metropolitan</td><td>Rp 185.000</td><td><span class="status-pill s-processing">Diproses</span></td><td><button class="action-btn">Detail</button></td></tr>
+              <tr><td>#SM-283</td><td>Sari Dewi</td><td>Leuchtturm A5</td><td>Rp 195.000</td><td><span class="status-pill s-shipped">Dikirim</span></td><td><button class="action-btn">Detail</button></td></tr>
+              <tr><td>#SM-282</td><td>Budi Hartono</td><td>Faber-Castell Set</td><td>Rp 142.000</td><td><span class="status-pill s-delivered">Diterima</span></td><td><button class="action-btn">Detail</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Manajemen Produk -->
+      <div class="admin-section" id="asec-aproducts">
+        <div class="admin-page-title">Manajemen Produk</div>
+        <div class="admin-page-sub">Kelola gambar, harga, deskripsi, dan ketersediaan produk</div>
+        <div class="admin-toolbar">
+          <input type="text" placeholder="🔍 Cari produk..." oninput="adminSearchProduct(this.value)">
+          <select onchange="adminFilterCat(this.value)">
+            <option value="">Semua Kategori</option>
+            <option>Pena</option><option>Pensil</option><option>Notebook</option>
+            <option>Marker</option><option>Stappler</option><option>Tas</option>
+          </select>
+          <button class="btn-add" onclick="openAddProduct()">+ Tambah Produk</button>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:auto;">
+          <table class="admin-table" id="admin-product-table">
+            <thead><tr><th></th><th>Nama Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Tersedia</th><th>Aksi</th></tr></thead>
+            <tbody id="admin-product-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pesanan Admin -->
+      <div class="admin-section" id="asec-aorders">
+        <div class="admin-page-title">Semua Pesanan</div>
+        <div class="admin-page-sub">Kelola dan pantau status pesanan pelanggan</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:auto;">
+          <table class="admin-table">
+            <thead><tr><th>ID</th><th>Pelanggan</th><th>Produk</th><th>Total</th><th>Tanggal</th><th>Status</th><th>Ubah Status</th></tr></thead>
+            <tbody>
+              <tr><td>#SM-284</td><td>Andi Santoso</td><td>Pilot Metropolitan</td><td>Rp 185.000</td><td>5 Des 2024</td><td><span class="status-pill s-processing">Diproses</span></td><td><select onchange="showToast('✅ Status diperbarui!')" style="font-size:0.78rem;border-radius:6px;border:1px solid var(--border);padding:0.25rem;"><option>Diproses</option><option>Dikirim</option><option>Diterima</option><option>Dibatalkan</option></select></td></tr>
+              <tr><td>#SM-283</td><td>Sari Dewi</td><td>Leuchtturm A5</td><td>Rp 195.000</td><td>4 Des 2024</td><td><span class="status-pill s-shipped">Dikirim</span></td><td><select onchange="showToast('✅ Status diperbarui!')" style="font-size:0.78rem;border-radius:6px;border:1px solid var(--border);padding:0.25rem;"><option>Diproses</option><option selected>Dikirim</option><option>Diterima</option><option>Dibatalkan</option></select></td></tr>
+              <tr><td>#SM-282</td><td>Budi Hartono</td><td>Faber-Castell Set</td><td>Rp 142.000</td><td>3 Des 2024</td><td><span class="status-pill s-delivered">Diterima</span></td><td><select onchange="showToast('✅ Status diperbarui!')" style="font-size:0.78rem;border-radius:6px;border:1px solid var(--border);padding:0.25rem;"><option>Diproses</option><option>Dikirim</option><option selected>Diterima</option><option>Dibatalkan</option></select></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pengguna -->
+      <div class="admin-section" id="asec-ausers">
+        <div class="admin-page-title">Pengguna</div>
+        <div class="admin-page-sub">47 pengguna terdaftar</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:auto;">
+          <table class="admin-table">
+            <thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Terdaftar</th><th>Pesanan</th></tr></thead>
+            <tbody>
+              <tr><td>John Doe</td><td>john@email.com</td><td><span class="status-pill" style="background:#fef3e2;color:#854f0b">User</span></td><td>Jan 2024</td><td>12</td></tr>
+              <tr><td>Sari Dewi</td><td>sari@email.com</td><td><span class="status-pill" style="background:#fef3e2;color:#854f0b">User</span></td><td>Mar 2024</td><td>5</td></tr>
+              <tr><td>Admin</td><td>admin@stationmart.id</td><td><span class="status-pill" style="background:#e6f0fb;color:#185fa5">Admin</span></td><td>Jan 2020</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Kategori -->
+      <div class="admin-section" id="asec-acategories">
+        <div class="admin-page-title">Kategori</div>
+        <div class="admin-page-sub">Kelola kategori produk toko</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+          <div class="cat-card"><div class="cat-icon">✒️</div><h3>Pena</h3><span>48 produk</span><br><button class="action-btn" style="margin-top:0.75rem">Edit</button></div>
+          <div class="cat-card"><div class="cat-icon">✏️</div><h3>Pensil</h3><span>36 produk</span><br><button class="action-btn" style="margin-top:0.75rem">Edit</button></div>
+          <div class="cat-card"><div class="cat-icon">📓</div><h3>Notebook</h3><span>62 produk</span><br><button class="action-btn" style="margin-top:0.75rem">Edit</button></div>
+          <div class="cat-card"><div class="cat-icon">🖊️</div><h3>Marker</h3><span>29 produk</span><br><button class="action-btn" style="margin-top:0.75rem">Edit</button></div>
+          <div class="cat-card" style="border:2px dashed var(--border);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;" onclick="showToast('Form tambah kategori akan muncul di sini')">
+            <div class="cat-icon">➕</div><h3>Tambah Kategori</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pengaturan -->
+      <div class="admin-section" id="asec-asettings">
+        <div class="admin-page-title">Pengaturan Toko</div>
+        <div class="admin-page-sub">Konfigurasi umum toko Anda</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;max-width:500px;">
+          <div class="form-group"><label>Nama Toko</label><input type="text" value="StatioMart"></div>
+          <div class="form-group"><label>Email Toko</label><input type="email" value="info@stationmart.id"></div>
+          <div class="form-group"><label>Ongkos Gratis (Rp)</label><input type="number" value="150000"></div>
+          <div class="form-group"><label>Mata Uang</label><select><option>IDR — Rupiah</option></select></div>
+          <button class="btn-add" onclick="showToast('✅ Pengaturan disimpan!')">Simpan Pengaturan</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========== CART PANEL ========== -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-panel" id="cart-panel">
+  <div class="cart-head">
+    <h3>Keranjang Belanja</h3>
+    <button class="close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items-list">
+    <div style="text-align:center;padding:3rem 1rem;color:var(--text3);">
+      <div style="font-size:2.5rem;margin-bottom:0.75rem;">🛒</div>
+      <p>Keranjang masih kosong</p>
+    </div>
+  </div>
+  <div class="cart-foot" id="cart-foot" style="display:none;">
+    <div class="cart-total">
+      <span>Total Pembayaran</span>
+      <span id="cart-total-val">Rp 0</span>
+    </div>
+    <button class="btn-checkout" onclick="checkout()">Bayar Sekarang →</button>
+  </div>
+</div>
+
+<!-- ========== AUTH MODAL ========== -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <h2>Selamat Datang 👋</h2>
+    <p>Masuk atau daftar untuk mulai berbelanja</p>
+    <div class="modal-tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Masuk</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Daftar</button>
+    </div>
+    <div id="form-login">
+      <div class="role-note">💡 <b>Demo:</b> Email <code>admin@stationmart.id</code> untuk akses Admin. Email lain untuk User biasa.</div>
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+      <button class="btn-hero" style="width:100%;margin-top:0.5rem" onclick="doLogin()">Masuk</button>
+    </div>
+    <div id="form-register" style="display:none">
+      <div class="form-group"><label>Nama Lengkap</label><input type="text" id="reg-name" placeholder="John Doe"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="reg-pass" placeholder="min. 8 karakter"></div>
+      <button class="btn-hero" style="width:100%;margin-top:0.5rem" onclick="doRegister()">Buat Akun</button>
+    </div>
+    <button onclick="closeAuth()" style="display:block;width:100%;margin-top:1rem;background:none;border:none;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;">Tutup</button>
+  </div>
+</div>
+
+<!-- ========== EDIT PRODUCT MODAL ========== -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal" style="max-width:540px;">
+    <h2 id="edit-modal-title">Tambah Produk Baru</h2>
+    <p>Isi detail produk di bawah ini</p>
+    <div class="edit-modal-body">
+      <div class="form-group full"><label>Nama Produk</label><input type="text" id="ep-name" placeholder="Nama produk"></div>
+      <div class="form-group">
+        <label>Kategori</label>
+        <select id="ep-cat">
+          <option>Pena</option><option>Pensil</option><option>Notebook</option>
+          <option>Marker</option><option>Stappler</option><option>Tas</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Ikon Emoji</label><input type="text" id="ep-icon" placeholder="✒️"></div>
+      <div class="form-group"><label>Harga (Rp)</label><input type="number" id="ep-price" placeholder="85000"></div>
+      <div class="form-group"><label>Stok</label><input type="number" id="ep-stock" placeholder="50"></div>
+      <div class="form-group full"><label>Deskripsi</label><input type="text" id="ep-desc" placeholder="Deskripsi singkat produk"></div>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1.25rem;">
+      <button class="btn-add" style="flex:1" onclick="saveProduct()">Simpan Produk</button>
+      <button onclick="closeEditModal()" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TOAST ========== -->
+<div class="toast" id="toast"></div>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script src="main.js"></script>
+</body>
+</html>
